@@ -1,20 +1,25 @@
-# Configuración del terminal para PNG
-set terminal png
-# Crear el directorio "graph" si no existe (esto es un workaround y no es ideal)
-system "mkdir -p graph"
-# Configuración del archivo de salida en el directorio "graph"
-set output "graph/solucion.png" #Sobreescribe el mismo archivo, habría que cambiar el nombre.
-# Configuración del título
-set title "Solución de la Ecuación de Laplace"
+# Guardar imagen PNG
+set terminal pngcairo size 1200,900 enhanced font 'Verdana,10'
+set output 'resultado_gnuplot.png'
 
-# Etiquetas de los ejes
-set xlabel "X"
-set ylabel "Y"
-set zlabel "Solución"
+set title 'Distribución de Temperatura'
+set xlabel 'X (m)'
+set ylabel 'Y (m)'
+set zlabel 'Temperatura (°C)'
 
-# Configuración de la vista 3D
-set view 60, 30, 1, 1
+set grid
+set dgrid3d 50,50 splines
+set hidden3d
+set view 60, 60
+set contour base
+set cntrparam levels incremental 0,10,100
+set style data lines
+set datafile commentschars '#'
 
-# Graficar la superficie
-splot data_file with pm3d title "Solución"
+splot 'laplace.dat' using 1:2:3 with lines lc rgb 'black' title 'T(x,y)', \
+      '' using 1:2:3 with pm3d notitle
 
+# Mostrar en pantalla usando wxt (si hay entorno gráfico)
+set terminal wxt enhanced
+unset output
+replot
