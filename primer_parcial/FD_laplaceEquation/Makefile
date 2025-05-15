@@ -1,46 +1,37 @@
-# Proyecto: FD_LaplaceEquation
-# Descripción: Resuelve la ecuación de Laplace por diferencias finitas.
+# =============================================
+# ============ Makefile: Laplace ==============
+# =============================================
 
-# Compilador
+# Compilador y opciones
 CXX = g++
-# Flags de compilación
-CXXFLAGS = -std=c++17 -Wall -Wextra -I/usr/include/eigen3
-# Directorios de inclusión
-INC_DIR = include
-# Directorios de código fuente
-SRC_DIR = src
-# Nombre del ejecutable
-TARGET = FD_LaplaceEquation
+CXXFLAGS = -Wall -std=c++11
 
-# Archivos de código fuente
-SRCS = $(SRC_DIR)/laplaceEquation.cpp $(SRC_DIR)/laplaceEquationMain.cpp
-# Archivos de encabezado
-HDRS = $(INC_DIR)/laplaceEquation.h
-# Todos los archivos objeto
-OBJS = $(SRCS:.cpp=.o)
+# Directorios
+INCLUDE_DIR = include
+SRC_DIR     = src
+BIN         = laplaceEquation
 
-# Regla principal: compila el ejecutable
-all: $(TARGET)
+# Archivos fuente
+SOURCES = $(SRC_DIR)/laplaceEquation.cpp $(SRC_DIR)/laplaceEquationMain.cpp
 
-# Regla para compilar los archivos objeto (.o)
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(INC_DIR)/laplaceEquation.h
-	@echo "Compilando $<"
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -I$(INC_DIR)
+# Regla por defecto
+all: $(BIN)
 
-# Regla para linkear los archivos objeto y crear el ejecutable
-$(TARGET): $(OBJS)
-	@echo "Enlazando $@"
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $@
+# Cómo compilar el ejecutable
+$(BIN): $(SOURCES)
+	$(CXX) $(CXXFLAGS) -I$(INCLUDE_DIR) -o $(BIN) $(SOURCES)
 
-# Regla para limpiar los archivos objeto y el ejecutable
+# Ejecutar el programa
+run: $(BIN)
+	./$(BIN)
+
+# Limpiar archivos generados
 clean:
-	@echo "Limpiando..."
-	rm -f $(TARGET) $(OBJS) generate_files/*
+	rm -f $(BIN) *.o laplace.dat resultado_*.png resultado_*.gp
 
-# Regla para ejecutar el programa
-run: all
-	@echo "Ejecutando el programa..."
-	./$(TARGET)
+# Regla completa
+full: clean all run
 
-.PHONY: all clean run
+.PHONY: all clean run full
+
 

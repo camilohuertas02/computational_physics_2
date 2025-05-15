@@ -1,47 +1,30 @@
-# Proyecto: FD_LaplaceEquation
-# Descripción: Resuelve la ecuación de Laplace por diferencias finitas.
+# Proyecto: Solución Numérica de la Ecuación de Laplace
 
-# Compilador
-CXX = g++
-# Flags de compilación (puedes añadir más si es necesario, como -Wall -Wextra -O2)
-CXXFLAGS = -std=c++17 -Wall -Wextra
-# Directorios de inclusión
-INC_DIR = include
-# Directorios de código fuente
-SRC_DIR = src
-# Nombre del ejecutable
-TARGET = FD_LaplaceEquation
+Este programa resuelve la ecuación de Laplace en 2D usando el método de diferencias finitas con Gauss-Seidel.
 
-# Archivos de código fuente
-SRCS = $(SRC_DIR)/laplaceEquation.cpp $(SRC_DIR)/laplaceEquationMain.cpp
-# Archivos de encabezado
-HDRS = $(INC_DIR)/laplaceEquation.h
-# Todos los archivos objeto
-OBJS = $(SRCS:.cpp=.o)
+## Características
+- Entrada interactiva de parámetros físicos y térmicos.
+- Sobrerrelajación opcional (λ).
+- Exportación de resultados a archivo `.dat`.
+- Visualización en 3D usando Gnuplot o Python.
 
-# Regla principal: compila el ejecutable
-all: $(TARGET)
+## Requisitos
+- C++11 o superior
+- Gnuplot o Python 3 con matplotlib/numpy
 
-# Regla para compilar los archivos objeto (.o)
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(INC_DIR)/laplaceEquation.h
-	@echo "Compilando $<"
-	$(CXX) $(CXXFLAGS) -c $< -o $@ -I$(INC_DIR)
+## Compilación y ejecución
 
-# Regla para linkear los archivos objeto y crear el ejecutable
-$(TARGET): $(OBJS)
-	@echo "Enlazando $@"
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $@
+```bash
+make
+make run
+```
 
-# Regla para limpiar los archivos objeto y el ejecutable
-clean:
-	@echo "Limpiando..."
-	rm -f $(TARGET) $(OBJS) generate_files/*
+## Visualización
+Se le preguntará si desea graficar con `gnuplot` o `python`. El archivo de datos es `laplace.dat`.
 
-# Regla para ejecutar el programa
-run: all
-	@echo "Ejecutando el programa..."
-	./$(TARGET)
+## Archivos
 
-.PHONY: all clean run
-
-
+- `include/laplaceEquation.h`: prototipos
+- `src/laplaceEquation.cpp`: funciones
+- `src/laplaceEquationMain.cpp`: función `main`
+- `scripts/plot_laplace.py`: visualización Python
