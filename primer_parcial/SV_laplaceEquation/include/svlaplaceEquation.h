@@ -1,5 +1,5 @@
 /**
- * @file     laplaceEquation.h
+ * @file     svlaplaceEquation.h
  * @brief    Declaraciones de funciones para solucionar numericamente la ecuación de Laplace y condiciones de frontera.
  * @author   Camilo Huertas, Isabel Nieto
  * @date     2025-05-08
