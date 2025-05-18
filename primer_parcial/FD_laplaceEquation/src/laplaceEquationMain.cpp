@@ -1,5 +1,5 @@
 /**
- * @author
+ * @author   Camilo Huertas, Isabel Nieto
  * @date     2025-04-27
  * @version  1.0.0
  * @license  MIT
@@ -8,27 +8,38 @@
 #include "../include/laplaceEquation.h"
 #include <iostream>
 #include <vector>
+#include <Eigen/Dense>
 
 using namespace std;
 
 
 int main() {
-    double base, altura, T_izq, T_der, T_sup, T_inf, error, lambda;
-    int nx, ny;
+	double base, altura, V_izq, V_base, V_escalera, error, lambda, metodo;
+	int nx, ny;
 
-    solicitarDatos(base, altura, nx, ny, T_izq, T_der, T_sup, T_inf, error, lambda);
+	solicitarDatos(base, altura, nx, ny, V_izq, V_base, V_escalera, error, lambda, metodo);
 
-    double dx = base / (nx - 1);
-    double dy = altura / (ny - 1);
+	double dx = base / (nx - 1);
+	double dy = altura / (ny - 1);
 
-    vector<vector<double>> matriz;
-    inicializarMatriz(matriz, nx, ny, T_izq, T_der, T_sup, T_inf);
 
-    gaussSeidel(matriz, nx, ny, error, lambda);
+	if (metodo == 1){
 
-    guardarDatos(matriz, nx, ny, dx, dy);
+	vector<vector<double>> matriz;
+	inicializarMatriz(matriz, nx, ny, V_izq, V_base, V_escalera);
+	gaussSeidel(matriz, nx, ny, error, lambda, V_escalera);
+	guardarDatos(matriz, nx, ny, dx, dy);
 
-    graficarDatos();
+	} else if (metodo ==2) {
+	
+	Eigen::MatrixXd matriz;
+	inicializarMatriz_eigen(matriz, nx, ny, V_izq, V_base, V_escalera);
+	gaussSeidel_eigen(matriz, nx, ny, error, lambda, V_escalera);
+	guardarDatos_eigen(matriz, nx, ny, dx, dy);
+	}
 
-    return 0;
+
+	graficarDatos();
+
+	return 0;
 }

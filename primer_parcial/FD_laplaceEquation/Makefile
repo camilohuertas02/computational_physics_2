@@ -4,7 +4,7 @@
 
 # Compilador y opciones
 CXX = g++
-CXXFLAGS = -Wall -std=c++11
+CXXFLAGS = -Wall -std=c++11 -g
 
 # Directorios
 INCLUDE_DIR = include
@@ -18,8 +18,11 @@ SOURCES = $(SRC_DIR)/laplaceEquation.cpp $(SRC_DIR)/laplaceEquationMain.cpp
 all: $(BIN)
 
 # Cómo compilar el ejecutable
+#$(BIN): $(SOURCES)
+#	$(CXX) $(CXXFLAGS) -I$(INCLUDE_DIR) -o $(BIN) $(SOURCES)
+
 $(BIN): $(SOURCES)
-	$(CXX) $(CXXFLAGS) -I$(INCLUDE_DIR) -o $(BIN) $(SOURCES)
+	$(CXX) $(CXXFLAGS) -I$(INCLUDE_DIR) -I/usr/include/eigen3 -o $(BIN) $(SOURCES)
 
 # Ejecutar el programa
 run: $(BIN)
