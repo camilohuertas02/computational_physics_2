@@ -1,57 +1,103 @@
-import sys
-import numpy as np
+# scripts/plot_laplace.py
+
+# Script para graficar la solución de la ecuación de Laplace con Matplotlib
+
+
+import matplotlib
+
+matplotlib.use('TkAgg')
+
 import matplotlib.pyplot as plt
-from matplotlib import cm
-import os  # Importar la librería os
 
-if len(sys.argv) != 2:
-    print("Uso: python plot_laplace.py <nombre_archivo_datos>")
-    sys.exit(1)
+import numpy as np
 
-data_file = sys.argv[1]
 
-try:
-    data = np.loadtxt(data_file)
-except FileNotFoundError:
-    print(f"Error: No se pudo encontrar el archivo de datos: {data_file}")
-    sys.exit(1)
-except Exception as e:
-    print(f"Error al leer el archivo de datos: {e}")
-    sys.exit(1)
 
-# Crear la malla de coordenadas
-ny, nx = data.shape
-x = np.arange(nx)
-y = np.arange(ny)
-X, Y = np.meshgrid(x, y)
+# 📥 Leer datos desde el archivo generado por C++
 
-# Crear la figura y los ejes 3D
-fig = plt.figure(figsize=(10, 8))
+x, y, V = [], [], []
+
+
+with open("laplace.dat") as file:
+
+    for line in file:
+
+        if line.strip() == "" or line.startswith("#"):
+
+            continue
+
+        xi, yi, Vi = map(float, line.strip().split())
+
+        x.append(xi)
+
+        y.append(yi)
+
+        V.append(Vi)
+
+
+# 🔁 Convertir listas a arrays de NumPy
+
+x = np.array(x)
+
+y = np.array(y)
+
+V = np.array(V)
+
+
+# 📏 Obtener dimensiones únicas para reconstruir la malla
+
+nx = len(np.unique(x))
+
+ny = len(np.unique(y))
+
+
+X = x.reshape((nx, ny))
+
+Y = y.reshape((nx, ny))
+
+Z = V.reshape((nx, ny))
+
+
+# 🎨 Crear figura 3D
+
+fig = plt.figure(figsize=(10, 7))
+
 ax = fig.add_subplot(111, projection='3d')
 
-# Graficar la superficie
-surf = ax.plot_surface(X, Y, data, cmap=cm.viridis, rstride=1, cstride=1,
-                       linewidth=0, antialiased=False)
 
-# Añadir etiquetas y título
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('Solución')
-ax.set_title('Solución de la Ecuación de Laplace')
+# 🟠 Superficie coloreada
 
-# Añadir barra de color
-fig.colorbar(surf, shrink=0.5, aspect=5)
+surf = ax.plot_surface(X, Y, Z, cmap="plasma", edgecolor='k', linewidth=0.4, alpha=0.9)
 
-# Crear el directorio "graph" si no existe
-graph_dir = "graph"
-if not os.path.exists(graph_dir):
-    os.makedirs(graph_dir)
 
-# Guardar el gráfico como un archivo PNG
-png_filename = os.path.join(graph_dir, f"solucion_{os.path.basename(data_file)}.png")  # Usar el nombre del archivo .dat
-plt.savefig(png_filename)
-print(f"Gráfico guardado en: {png_filename}")
+# 🎯 Curvas de nivel proyectadas en z=0
 
-# No mostrar el gráfico en pantalla
-# plt.show()
+ax.contour(X, Y, Z, zdir='z', offset=0, cmap="plasma")
 
+
+# 🧭 Etiquetas
+
+ax.set_xlabel('X (m)')
+
+ax.set_ylabel('Y (m)')
+
+ax.set_zlabel('Voltaje (V)')
+
+ax.set_title("Distribución de Voltaje - Ecuación de Laplace")
+
+
+# 🎨 Barra de colores
+
+fig.colorbar(surf, shrink=0.6, aspect=10, label='Voltaje (V)')
+
+
+# 💾 Guardar imagen automáticamente
+
+plt.tight_layout()
+
+plt.savefig("resultado_python.png", dpi=300)
+
+
+# 👁️ Mostrar en pantalla
+
+plt.show() 

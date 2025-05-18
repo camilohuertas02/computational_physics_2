@@ -1,50 +1,45 @@
-#include "laplaceEquation.h"
-#include <iostream>
-#include <string>
-
 /**
- * @brief Función principal del programa para resolver la ecuación de Laplace.
- *
- * @return Código de salida del programa.
+ * @author   Camilo Huertas, Isabel Nieto
+ * @date     2025-04-27
+ * @version  1.0.0
+ * @license  MIT
  */
+
+#include "../include/laplaceEquation.h"
+#include <iostream>
+#include <vector>
+#include <Eigen/Dense>
+
+using namespace std;
+
+
 int main() {
-    double fronteraIzquierda, base, escalera, lambda, criterioConvergencia;
-    int nx, ny, opcionImplementacion, opcionGrafica;
-    std::string nombreArchivo;
+	double base, altura, V_izq, V_base, V_escalera, error, lambda, metodo;
+	int nx, ny;
 
-    // 1. Obtener los datos de entrada del usuario
-    IngresarDatos(fronteraIzquierda, base, escalera, nx, ny, lambda, criterioConvergencia, opcionImplementacion, opcionGrafica);
+	solicitarDatos(base, altura, nx, ny, V_izq, V_base, V_escalera, error, lambda, metodo);
 
-    // 2. Verificar los datos ingresados
-    int codigoError = VerificarDatos(fronteraIzquierda, base, escalera, nx, ny, lambda, criterioConvergencia, opcionImplementacion, opcionGrafica);
-    if (codigoError != 0) {
-        std::cerr << "Error en los datos de entrada. El programa terminará." << std::endl;
-        return codigoError;
-    }
+	double dx = base / (nx - 1);
+	double dy = altura / (ny - 1);
 
-    // 3. Resolver la ecuación de Laplace
-    std::cout << "Resolviendo la ecuación de Laplace..." << std::endl;
-    std::vector<std::vector<double>> solucion = SolucionDF(fronteraIzquierda, base, escalera, nx, ny, lambda, opcionImplementacion);
 
-     if (solucion.empty())
-    {
-        std::cerr << "Error al resolver la ecuación de Laplace. El programa terminará." << std::endl;
-        return 1;
-    }
+	if (metodo == 1){
 
-    // 4. Generar el archivo de datos
-    std::cout << "Generando archivo de datos..." << std::endl;
-    nombreArchivo = GenerarDatos(solucion, nx, ny, lambda, fronteraIzquierda, base, escalera);
-    if (nombreArchivo == "") {
-        std::cerr << "Error al generar el archivo de datos. El programa terminará." << std::endl;
-        return 1;
-    }
+	vector<vector<double>> matriz;
+	inicializarMatriz(matriz, nx, ny, V_izq, V_base, V_escalera);
+	gaussSeidel(matriz, nx, ny, error, lambda, V_escalera);
+	guardarDatos(matriz, nx, ny, dx, dy);
 
-    // 5. Graficar la solución
-    std::cout << "Graficando la solución..." << std::endl;
-    Graficar(nombreArchivo, opcionGrafica);
+	} else if (metodo ==2) {
+	
+	Eigen::MatrixXd matriz;
+	inicializarMatriz_eigen(matriz, nx, ny, V_izq, V_base, V_escalera);
+	gaussSeidel_eigen(matriz, nx, ny, error, lambda, V_escalera);
+	guardarDatos_eigen(matriz, nx, ny, dx, dy);
+	}
 
-    std::cout << "Programa terminado." << std::endl;
-    return 0;
+
+	graficarDatos();
+
+	return 0;
 }
-
