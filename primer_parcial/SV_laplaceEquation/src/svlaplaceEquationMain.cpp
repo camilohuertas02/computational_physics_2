@@ -13,26 +13,31 @@ using namespace std;
 
 
 int main() {
-	double base, altura, V_izq, V_base, V_escalera, error, lambda, metodo;
-	int nx, ny;
+	double radio;
+	double potencial_0 = 50; 
+	int nx, ny, Nfourier, metodo;
 
-	solicitarDatos(base, altura, nx, ny, V_izq, V_base, V_escalera, error, lambda, metodo);
+	solicitarDatos(Nfourier, nx, ny, metodo, radio);
 
-	double dx = base / (nx - 1);
-	double dy = altura / (ny - 1);
+	double dx = radio / (nx - 1);
+	double dy = radio / (ny - 1);
 
 	vector<vector<double>> matriz;
-	inicializarMatriz(matriz, nx, ny, V_izq, V_base, V_escalera);
+	inicializarMatriz(matriz, nx, ny, radio, potencial_0);
+
+	vector<double> coeficientes(Nfourier + 1);
 
 	if (metodo == 1){
-	coeficiente_trapecio(matriz, nx, ny, error, lambda, V_escalera);
+		coeficiente_simpson(nx, ny, radio, Nfourier, coeficientes, potencial_0);
 
 	} else if (metodo ==2) {
-	coeficiente_simpson(matriz, nx, ny, error, lambda, V_escalera);
+		coeficiente_trapecio(nx, ny, radio, Nfourier, coeficientes, potencial_0);	
 	}
 
-	calcularpotencial();
-	guardarDatos_eigen(matriz, nx, ny, dx, dy);
+	calcularPotencial(matriz, nx, ny, dx, dy, radio, coeficientes, Nfourier);
+
+	guardarDatos(matriz, nx, ny, dx, dy);
+
 	graficarDatos();
 
 	return 0;

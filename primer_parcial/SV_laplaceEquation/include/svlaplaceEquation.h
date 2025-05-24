@@ -1,5 +1,5 @@
 /**
- * @file     laplaceEquation.h
+ * @file     svlaplaceEquation.h
  * @brief    Declaraciones de funciones para solucionar numericamente la ecuación de Laplace y condiciones de frontera.
  * @author   Camilo Huertas, Isabel Nieto
  * @date     2025-05-08
@@ -16,23 +16,28 @@
 
 using namespace std;
 
-void solicitarDatos(double &base, double &altura, int &nx, int &ny,
-		double &V_izq, double &V_base, double &V_escalera,
-		double &error, double &lambda, double &metodo);
 
-void validarDatos(double &dato, const string &mensaje, double minimo = 0.0, double maximo = 1e9);
+//void simpson(vector<vector<double>> &matriz, int nx, int ny, double error, double lambda, double V_escalera);
 
-void inicializarMatriz(vector<vector<double>> &matriz, int nx, int ny, double V_izq, double V_base, double V_escalera);
+//void trapecio(Eigen::MatrixXd& matriz, int nx, int ny, double error, double lambda, double V_escalera);
 
-void simpson(vector<vector<double>> &matriz, int nx, int ny, double error, double lambda, double V_escalera);
+//void calcularpotencial();
 
-void trapecio(Eigen::MatrixXd& matriz, int nx, int ny, double error, double lambda, double V_escalera);
 
-void calcularpotencial();
+void solicitarDatos(int &Nfourier, int &nx, int &ny, int &metodo, double &radio);
+
+void inicializarMatriz(vector<vector<double>> &matriz, int nx, int ny, int radio, double potencial_0);
+
+void coeficiente_simpson(int nx, int ny, double radio, int Nfourier, vector<double> &coeficientes, double potencial_0);
+
+void coeficiente_trapecio(int nx, int ny, double radio, int Nfourier, vector<double> &coeficientes, double potencial_0);
+
+void calcularPotencial(vector<vector<double>> &matriz, int nx, int ny, double dx, double dy, double radio, vector<double> coeficientes, int Nfourier);
 
 void guardarDatos(const vector<vector<double>> &matriz, int nx, int ny, double dx, double dy);
 
 void graficarDatos();
+
 
 #endif // SVLAPLACEEQUATION_H
 
